@@ -23,11 +23,21 @@ const FOCUS_RATE = 240;                 // bonus points/second while BOTH eyes a
 export const TAP_ARC = 0.70;            // ±~40°
 export const HOLD_ARC = 0.95;           // ±~54°
 export const SLIDE_ARC = 1.05;          // ±~60° (the line is moving — be forgiving)
-export const PRESENCE_MAG = 0.42;       // stick must be deflected at least this much to "point"
+export const PRESENCE_MAG = 0.42;       // stick must be deflected at least this much to "point" (spin)
 export const CENTER_MAG = 0.28;         // for a CENTER note the stick must be BELOW this (neutral)
+
+// PROXIMITY judging — the core of the feel: hit quality = how close the PUPIL (= the stick position)
+// is to the note's target point, in stick-space. The note's spot is the unit vector (cos,sin); the
+// pupil is (stick.x, stick.y). Distance 0 = pupil dead-on the note; ~1 = stick centred; 2 = opposite.
+// So you must actually move the eye ONTO the note. Combined with timing for taps. Scaled by difficulty.
+export const PERF_DIST = 0.40;          // pupil within this of the note → Perfect-quality proximity
+export const GOOD_DIST = 0.82;          // pupil within this → on the note (Good); beyond → off
 
 /** Shortest absolute angle between two headings (radians, 0..π). */
 function angleGap(a, b) { return Math.abs(wrapPi(a - b)); }
+
+/** Distance from the pupil (stick position) to a note's target point (unit vector at `ang`). */
+function proxDist(s, ang) { const sx = s ? s.x : 0, sy = s ? s.y : 0; return Math.hypot(sx - Math.cos(ang), sy - Math.sin(ang)); }
 
 export class Scorer {
   constructor() {
@@ -92,9 +102,9 @@ export class Scorer {
     // Per-difficulty effective arcs/windows (scaled off the base constants).
     const perfWin = WINDOWS.perfect * this.winScale;
     const tapWin = WINDOWS.good * this.winScale + 0.02;   // half-window a tap is evaluable around its time
-    const tapArc = TAP_ARC * this.arcScale;
-    const holdArc = HOLD_ARC * this.arcScale;
-    const slideArc = SLIDE_ARC * this.arcScale;
+    const perfDist = PERF_DIST * this.arcScale;
+    const goodDist = GOOD_DIST * this.arcScale;
+    const slideDist = GOOD_DIST * this.arcScale * 1.15;   // slides are moving — a touch looser
     for (const n of notes) {
       if (n.judged) continue;
       n.lit = false;
@@ -132,13 +142,15 @@ export class Scorer {
         if (songTime < t0 - tapWin) continue;
         const err = songTime - t0;
         const modOk = n.mod ? input.heldMods().includes(n.mod) : true;
-        if (engaged && modOk && angleGap(sa, n.angle) <= tapArc) {
+        const d = proxDist(s, n.angle);                       // how close the pupil is to the note
+        if (modOk && d <= goodDist) {
           n.lit = true;
-          if (n.bestErr == null || Math.abs(err) < Math.abs(n.bestErr)) n.bestErr = err;
-          if (Math.abs(err) <= perfWin) { this._resolve(n, 'perfect', songTime); continue; }
+          if (n._bestD == null || d < n._bestD) { n._bestD = d; n.bestErr = err; }   // best proximity + its timing
+          if (d <= perfDist && Math.abs(err) <= perfWin) { this._resolve(n, 'perfect', songTime); continue; }
         }
         if (songTime > t0 + tapWin) {
-          this._resolve(n, n.bestErr == null ? 'miss' : Math.abs(n.bestErr) <= perfWin ? 'perfect' : 'good', songTime);
+          if (n._bestD == null) this._resolve(n, 'miss', songTime);
+          else this._resolve(n, (n._bestD <= perfDist && Math.abs(n.bestErr) <= perfWin) ? 'perfect' : 'good', songTime);
         }
         continue;
       }
@@ -160,12 +172,12 @@ export class Scorer {
         continue;
       }
 
-      // hold or slide: accrue on-target time against a (possibly moving) target angle
+      // hold or slide: accrue time while the PUPIL is on the (possibly moving) target point
       if (songTime >= t0 && songTime <= t1) {
         const target = noteTargetAngle(n, songTime);
-        const arc = n.type === 'slide' ? slideArc : holdArc;
+        const lim = n.type === 'slide' ? slideDist : goodDist;
         const modOk = n.mod ? input.heldMods().includes(n.mod) : true;
-        if (engaged && modOk && angleGap(sa, target) <= arc) {
+        if (modOk && proxDist(s, target) <= lim) {
           n.lit = true;
           n._covered += dt;
           this.score += Math.round(SUSTAIN_RATE * dt);
