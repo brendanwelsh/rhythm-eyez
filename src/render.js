@@ -1,4 +1,4 @@
-// render.js — EYE BEATS, the 2D-canvas NOTE + HUD overlay (TRANSPARENT background).
+// render.js — RHYTHM EYEZ, the 2D-canvas NOTE + HUD overlay (TRANSPARENT background).
 //
 // Psychedelic LSD/hippy theme: neon shapes on black, rainbow flourishes. This canvas sits ON TOP of
 // the Three.js eyeball stage (eyes3d.js). It paints nothing behind the notes — the 3D eyes show

@@ -1,4 +1,4 @@
-# 👁 EYE BEATS
+# 👁 RHYTHM EYEZ
 
 > An **optical dual-analog-stick rhythm game**. Two **realistic 3D eyeballs** (Three.js) are your
 > **pupils** — push a stick and that eye looks *outward* toward the incoming light; centre the stick

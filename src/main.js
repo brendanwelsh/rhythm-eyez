@@ -1,4 +1,4 @@
-// main.js — EYE BEATS entry point. State machine + game loop wiring all modules together.
+// main.js — RHYTHM EYEZ entry point. State machine + game loop wiring all modules together.
 
 import { AudioEngine } from './audio.js';
 import { GamepadInput } from './input.js';
@@ -35,7 +35,7 @@ class Game {
     this.input = new GamepadInput();
     this.scorer = new Scorer();
     try { this.eyes = new Eyes2D(document.getElementById('eyes3d')); }     // the eyeballs (behind)
-    catch (e) { this.eyes = null; console.warn('EYE BEATS: eyes failed to init.', e); }
+    catch (e) { this.eyes = null; console.warn('RHYTHM EYEZ: eyes failed to init.', e); }
     this.renderer = new Renderer(document.getElementById('stage')); // 2D laser+HUD overlay (front)
     this._lastRaf = 0;
 
@@ -706,7 +706,7 @@ class Game {
       this.eyes.update(this._eyeState(), fdt);
       this.eyes.render();
     } catch (e) {
-      if (!this._eyesDead) { this._eyesDead = true; console.error('EYE BEATS 3D error:', e); }
+      if (!this._eyesDead) { this._eyesDead = true; console.error('RHYTHM EYEZ 3D error:', e); }
     }
     try {
       this.renderer.drawGame({ chart: live ? this.chart : null, songTime, scorer: this.scorer, input: this.input, playing: this.state === 'playing', demo: this.demo, eyes: this.eyes ? this.eyes.screen : null });
