@@ -9,15 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&family=Bungee&family=Bungee+Shade&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-  <!-- Three.js (3D eyeballs) — build-free ES modules from a CDN -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-    }
-  }
-  </script>
 </head>
 <body>
   <!-- Boot gate: a real click/keypress is REQUIRED to unlock browser audio. -->
@@ -29,7 +20,7 @@
     </div>
   </div>
 
-  <!-- 3D eyeballs (Three.js / eyes3d.js) sit BEHIND the 2D laser+HUD overlay -->
+  <!-- the eyeballs (eyes2d.js) sit BEHIND the note + HUD overlay -->
   <canvas id="eyes3d"></canvas>
   <!-- Transparent 2D overlay: lasers (notes), FX, HUD (render.js) -->
   <canvas id="stage"></canvas>

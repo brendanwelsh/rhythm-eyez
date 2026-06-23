@@ -109,13 +109,9 @@ export class Renderer {
     ctx.save();
     if (this.glitch > 0.01) ctx.translate(Math.sin(this._t * 90) * 7 * this.glitch, Math.sin(this._t * 70) * 4 * this.glitch);
 
-    // a very faint centre reticle + 8-direction tick guides at each eye (so diagonals read clear)
-    for (const ring of ['L', 'R']) this._reticle(eyes[ring], ring);
-
-    // the notes per ring, then the player's GAZE/aim line, then hit FX on top
+    // NO lines / reticles — the eye looking at the note IS the indication. Notes, then hit FX.
     for (const ring of ['L', 'R']) {
       if (chart) this._notes(ring, eyes[ring], chart, songTime);
-      this._gaze(ring, eyes[ring], state, chart, songTime);
       this._effects(ring, eyes[ring], songTime);
     }
 

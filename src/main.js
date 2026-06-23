@@ -3,7 +3,7 @@
 import { AudioEngine } from './audio.js';
 import { GamepadInput } from './input.js';
 import { Renderer } from './render.js';
-import { EyeStage } from './eyes3d.js';
+import { Eyes2D } from './eyes2d.js';
 import { Scorer } from './scoring.js';
 import { normalizeChart, angleVec, noteTargetAngle } from './chart.js';
 import { generateBeatmap, chartToJSON } from './beatgen.js';
@@ -34,8 +34,8 @@ class Game {
     this.audio = new AudioEngine();
     this.input = new GamepadInput();
     this.scorer = new Scorer();
-    try { this.eyes = new EyeStage(document.getElementById('eyes3d')); }   // the 3D eyeballs (behind)
-    catch (e) { this.eyes = null; console.warn('EYE BEATS: no WebGL — running 2D overlay only.', e); }
+    try { this.eyes = new Eyes2D(document.getElementById('eyes3d')); }     // the eyeballs (behind)
+    catch (e) { this.eyes = null; console.warn('EYE BEATS: eyes failed to init.', e); }
     this.renderer = new Renderer(document.getElementById('stage')); // 2D laser+HUD overlay (front)
     this._lastRaf = 0;
 
