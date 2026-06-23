@@ -63,8 +63,36 @@ class Game {
     this._wireBundledAudio();
     this._unlockAudioOnGesture();
     this.showScreen('title');
+    if (location.hash.slice(1)) this._dev(location.hash.slice(1));
 
     requestAnimationFrame((t) => this._loop(t));
+  }
+
+  // Dev visual harness so a headless screenshot can SEE the stage (no controller needed):
+  //   #look   → drop the boot gate + menus, show the bare eyes at rest
+  //   #t=20   → load the base chart and FREEZE it at song-time 20s (notes drawn statically, the
+  //             demo aims the eyes at them) — lets a screenshot show note shapes + alignment
+  //   #demo   → run the live attract demo (needs a real clock; for an actual browser, not headless)
+  _dev(mode) {
+    const boot = this._el('boot'); if (boot) boot.classList.add('gone');
+    for (const s of document.querySelectorAll('.screen')) s.classList.add('hidden');
+    this.audio.resume().catch(() => {});
+    const m = mode.match(/t=?(\d+(?:\.\d+)?)/);
+    if (!mode.includes('demo') && !m) return;
+    // fetch ONLY the chart JSON (don't await the heavy audio — it stalls headless virtual-time)
+    fetch(BUILTIN[0].url).then((r) => r.json()).then((raw) => {
+      this.currentRaw = raw;
+      this.chart = normalizeChart(raw);
+      this._applyChartSettings(this.chart);
+      this.scorer.reset();
+      this._applyDifficulty(this.chart);
+      this.state = 'playing'; this.demo = true;
+      this._mood = 0; this._comboTier = 0; this._lastSustainR = -1;
+      this.input.demoMods = []; this._demoDefl = { L: { v: { x: 0, y: 0 }, m: 0 }, R: { v: { x: 0, y: 0 }, m: 0 } };
+      this.showScreen(null);
+      if (m) this._devFrozenTime = parseFloat(m[1]);   // static screenshot at this song-time
+      else this.audio.tryLoadUrl('assets/' + (raw.meta.audio || '')).finally(() => this.audio.start(this.chart.meta.bpm, LEAD_IN));
+    }).catch((e) => console.error('dev load failed', e));
   }
 
   // --- DOM / screens -------------------------------------------------------
@@ -630,14 +658,14 @@ class Game {
     const fdt = this._lastRaf ? Math.min(0.05, (now - this._lastRaf) / 1000) : 1 / 60;  // real-time dt for the eyes
     this._lastRaf = now;
     const live = this.state === 'playing' || this.state === 'paused';
-    const songTime = live ? this.audio.time : 0;
+    const songTime = this._devFrozenTime != null ? this._devFrozenTime : (live ? this.audio.time : 0);
     window.__songTime = songTime; // for keyboard flick stamping
     this.input.update(songTime);
     this._handleIntents();
 
     if (this.state === 'title') this._updateSplash();
 
-    if (this.state === 'playing') {
+    if (this.state === 'playing' && this._devFrozenTime == null) {
       if (this.demo) this._demoAutoplay(songTime);
       // Frame-driven, presence-based scoring: notes resolve themselves as their window passes.
       const dt = Math.max(0, Math.min(0.05, songTime - (this._lastSongTime ?? songTime)));
