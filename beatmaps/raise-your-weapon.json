@@ -67,53 +67,38 @@
       "hold": 0.315
     },
     {
-      "time": 7.552,
-      "ring": "R",
-      "angle": 288
-    },
-    {
-      "time": 7.552,
+      "time": 8.469,
       "ring": "L",
       "angle": 258,
       "to": 188,
-      "hold": 0
-    },
-    {
-      "time": 7.552,
-      "ring": "R",
-      "angle": 188
-    },
-    {
-      "time": 8.469,
-      "ring": "L",
-      "angle": 158
+      "hold": 0.593
     },
     {
       "time": 9.259,
       "ring": "R",
-      "angle": 128,
-      "to": 58,
-      "hold": 0.744
+      "angle": 188
     },
     {
       "time": 10.251,
       "ring": "L",
-      "angle": 58
+      "angle": 158
     },
     {
       "time": 11.019,
       "ring": "R",
-      "angle": 28
+      "angle": 128,
+      "to": 58,
+      "hold": 0.608
     },
     {
       "time": 11.829,
       "ring": "L",
-      "angle": 270
+      "angle": 58
     },
     {
       "time": 12.811,
       "ring": "R",
-      "angle": 90
+      "angle": 28
     },
     {
       "time": 13.749,
@@ -134,18 +119,23 @@
     },
     {
       "time": 15.755,
-      "ring": "L",
-      "angle": 270
+      "ring": "R",
+      "angle": 90
     },
     {
       "time": 16.64,
-      "ring": "R",
-      "angle": 90
+      "ring": "L",
+      "angle": 270
     },
     {
       "time": 17.429,
       "ring": "L",
       "angle": 270
+    },
+    {
+      "time": 17.429,
+      "ring": "R",
+      "angle": 90
     },
     {
       "time": 18.517,
@@ -156,28 +146,23 @@
       "time": 19.381,
       "ring": "L",
       "angle": 208,
-      "hold": 0.65
+      "hold": 0.315
     },
     {
       "time": 19.381,
       "ring": "R",
       "angle": 28,
-      "hold": 0.65
-    },
-    {
-      "time": 20.309,
-      "ring": "R",
-      "angle": 178
+      "hold": 0.315
     },
     {
       "time": 20.309,
       "ring": "L",
       "angle": 148,
       "to": 78,
-      "hold": 0.616
+      "hold": 0
     },
     {
-      "time": 21.131,
+      "time": 20.309,
       "ring": "R",
       "angle": 78
     },
@@ -187,21 +172,11 @@
       "angle": 48
     },
     {
-      "time": 22.133,
+      "time": 21.131,
       "ring": "R",
       "angle": 18,
       "to": 308,
-      "hold": 0
-    },
-    {
-      "time": 22.133,
-      "ring": "L",
-      "angle": 308
-    },
-    {
-      "time": 22.133,
-      "ring": "R",
-      "angle": 278
+      "hold": 0.751
     },
     {
       "time": 22.133,
@@ -217,102 +192,93 @@
     },
     {
       "time": 23.499,
-      "ring": "R",
-      "angle": 0
-    },
-    {
-      "time": 24.704,
       "ring": "L",
       "angle": 180
     },
     {
-      "time": 25.899,
+      "time": 24.704,
       "ring": "R",
       "angle": 0
     },
     {
-      "time": 27.264,
+      "time": 25.899,
       "ring": "L",
-      "angle": 180,
+      "angle": 180
+    },
+    {
+      "time": 27.264,
+      "ring": "R",
+      "angle": 0,
       "spin": 2,
       "hold": 1.128
     },
     {
       "time": 28.64,
+      "ring": "L",
+      "angle": 180,
+      "mod": "R1"
+    },
+    {
+      "time": 29.845,
       "ring": "R",
       "angle": 0
     },
     {
-      "time": 29.845,
+      "time": 31.04,
       "ring": "L",
       "angle": 180
     },
     {
-      "time": 31.04,
-      "ring": "R",
-      "angle": 0
-    },
-    {
       "time": 31.904,
       "ring": "L",
-      "angle": 108,
+      "angle": 168,
       "hold": 0.717
     },
     {
       "time": 31.904,
       "ring": "R",
-      "angle": 288,
+      "angle": 348,
       "hold": 0.717
     },
     {
       "time": 32.928,
       "ring": "R",
-      "angle": 78
+      "angle": 138
     },
     {
       "time": 33.781,
       "ring": "L",
-      "angle": 48,
-      "to": 338,
+      "angle": 108,
+      "to": 38,
       "hold": 0.776
     },
     {
       "time": 34.816,
-      "ring": "R",
-      "angle": 338
+      "ring": "L",
+      "angle": 8,
+      "hold": 0.563
     },
     {
       "time": 34.816,
-      "ring": "L",
-      "angle": 308,
-      "hold": 0.563
+      "ring": "R",
+      "angle": 38
     },
     {
       "time": 35.84,
       "ring": "R",
-      "angle": 280,
-      "to": 210,
+      "angle": 340,
+      "to": 270,
       "hold": 0.776
     },
     {
       "time": 36.875,
       "ring": "L",
-      "angle": 210
+      "angle": 270
     },
     {
       "time": 36.875,
       "ring": "R",
-      "angle": 180
-    },
-    {
-      "time": 38.069,
-      "ring": "L",
-      "angle": 45
-    },
-    {
-      "time": 38.069,
-      "ring": "R",
-      "angle": 135
+      "angle": 240
     },
     {
       "time": 38.069,
@@ -328,8 +294,8 @@
     },
     {
       "time": 39.275,
-      "ring": "R",
-      "angle": 225
+      "ring": "L",
+      "angle": 315
     },
     {
       "time": 40.405,
@@ -339,72 +305,82 @@
     {
       "time": 40.405,
       "ring": "R",
-      "angle": 135
+      "angle": 225
     },
     {
       "time": 41.216,
+      "ring": "R",
+      "angle": 135
+    },
+    {
+      "time": 42.101,
       "ring": "L",
       "angle": 315
     },
     {
-      "time": 42.101,
-      "ring": "R",
-      "angle": 225
-    },
-    {
       "time": 42.944,
       "ring": "L",
-      "angle": 0,
+      "angle": 60,
       "hold": 0.545
     },
     {
       "time": 42.944,
       "ring": "R",
-      "angle": 180,
+      "angle": 240,
       "hold": 0.545
     },
     {
       "time": 43.723,
       "ring": "R",
-      "angle": 330
+      "angle": 30
     },
     {
       "time": 44.736,
       "ring": "L",
-      "angle": 300,
-      "to": 230,
-      "hold": 0.824
-    },
-    {
-      "time": 45.835,
-      "ring": "R",
-      "angle": 230
-    },
-    {
-      "time": 46.773,
-      "ring": "L",
-      "angle": 200,
-      "mod": "square"
-    },
-    {
-      "time": 47.541,
-      "ring": "R",
-      "angle": 170,
-      "to": 100,
+      "angle": 0,
+      "to": 290,
       "hold": 0
     },
     {
+      "time": 44.736,
+      "ring": "R",
+      "angle": 290
+    },
+    {
+      "time": 45.835,
+      "ring": "L",
+      "angle": 260,
+      "mod": "square"
+    },
+    {
+      "time": 46.773,
+      "ring": "R",
+      "angle": 230,
+      "to": 160,
+      "hold": 0.576
+    },
+    {
       "time": 47.541,
       "ring": "L",
-      "angle": 100
+      "angle": 160
+    },
+    {
+      "time": 47.541,
+      "ring": "R",
+      "angle": 130
     },
     {
       "time": 48.352,
-      "ring": "R",
-      "angle": 70
+      "ring": "L",
+      "angle": 270
     },
     {
       "time": 49.269,
+      "ring": "R",
+      "angle": 90
+    },
+    {
+      "time": 50.091,
       "ring": "L",
       "angle": 270
     },
@@ -420,13 +396,13 @@
     },
     {
       "time": 51.797,
-      "ring": "R",
-      "angle": 90
+      "ring": "L",
+      "angle": 270
     },
     {
       "time": 51.797,
-      "ring": "L",
-      "angle": 270
+      "ring": "R",
+      "angle": 90
     },
     {
       "time": 52.597,
@@ -436,63 +412,63 @@
     {
       "time": 53.365,
       "ring": "L",
-      "angle": 270
+      "angle": 340,
+      "hold": 0.568
     },
     {
-      "time": 54.176,
+      "time": 53.365,
       "ring": "R",
-      "angle": 90
+      "angle": 160,
+      "hold": 0.568
     },
     {
       "time": 54.176,
       "ring": "L",
       "angle": 280,
-      "hold": 0.568
+      "to": 210,
+      "hold": 0.608
     },
     {
       "time": 54.176,
       "ring": "R",
-      "angle": 100,
-      "hold": 0.568
+      "angle": 310
     },
     {
       "time": 54.987,
       "ring": "R",
-      "angle": 250
+      "angle": 210
     },
     {
       "time": 55.787,
       "ring": "L",
-      "angle": 220,
-      "to": 150,
-      "hold": 0.631
+      "angle": 180
     },
     {
       "time": 56.629,
       "ring": "R",
-      "angle": 150
+      "angle": 150,
+      "to": 80,
+      "hold": 0.624
     },
     {
       "time": 57.461,
       "ring": "L",
-      "angle": 120
+      "angle": 80
     },
     {
       "time": 58.251,
       "ring": "R",
-      "angle": 90,
-      "to": 20,
-      "hold": 0.632
+      "angle": 50
     },
     {
       "time": 59.093,
       "ring": "L",
-      "angle": 20
+      "angle": 180
     },
     {
       "time": 59.093,
       "ring": "R",
-      "angle": 350
+      "angle": 0
     },
     {
       "time": 59.904,
@@ -500,97 +476,102 @@
       "angle": 180
     },
     {
+      "time": 59.904,
+      "ring": "R",
+      "angle": 0
+    },
+    {
       "time": 60.907,
-      "ring": "R",
-      "angle": 0
-    },
-    {
-      "time": 61.749,
-      "ring": "L",
-      "angle": 180
-    },
-    {
-      "time": 62.571,
-      "ring": "R",
-      "angle": 0
-    },
-    {
-      "time": 63.339,
       "ring": "L",
       "angle": 180,
       "mod": "triangle"
     },
     {
-      "time": 64.139,
+      "time": 61.749,
       "ring": "R",
       "angle": 0
     },
     {
-      "time": 64.139,
+      "time": 62.571,
       "ring": "L",
       "angle": 180
     },
     {
-      "time": 64.928,
+      "time": 63.339,
       "ring": "R",
       "angle": 0
     },
     {
-      "time": 65.707,
+      "time": 64.139,
+      "ring": "L",
+      "angle": 260,
+      "hold": 0.315
+    },
+    {
+      "time": 64.139,
+      "ring": "R",
+      "angle": 80,
+      "hold": 0.315
+    },
+    {
+      "time": 64.928,
       "ring": "L",
       "angle": 200,
-      "hold": 0.612
+      "to": 130,
+      "hold": 0.584
+    },
+    {
+      "time": 65.707,
+      "ring": "L",
+      "angle": 100,
+      "hold": 0.481
     },
     {
       "time": 65.707,
       "ring": "R",
-      "angle": 20,
-      "hold": 0.612
+      "angle": 130
     },
     {
       "time": 66.581,
       "ring": "R",
-      "angle": 170
+      "angle": 72,
+      "to": 2,
+      "hold": 0.592
     },
     {
       "time": 67.371,
       "ring": "L",
-      "angle": 140,
-      "to": 70,
-      "hold": 0
+      "angle": 2
     },
     {
       "time": 67.371,
       "ring": "R",
-      "angle": 70
+      "angle": 332
     },
     {
       "time": 68.224,
       "ring": "L",
-      "angle": 40,
-      "hold": 0.469
+      "angle": 45
     },
     {
       "time": 69.077,
       "ring": "R",
-      "angle": 12,
-      "to": 302,
-      "hold": 0.624
+      "angle": 135
     },
     {
       "time": 69.909,
       "ring": "L",
-      "angle": 302
-    },
-    {
-      "time": 70.731,
-      "ring": "R",
-      "angle": 272
+      "angle": 315
     },
     {
       "time": 70.731,
       "ring": "L",
       "angle": 45
+    },
+    {
+      "time": 70.731,
+      "ring": "R",
+      "angle": 225
     },
     {
       "time": 71.595,
@@ -610,94 +591,86 @@
     {
       "time": 74.091,
       "ring": "L",
-      "angle": 45
+      "angle": 182,
+      "hold": 0.567
+    },
+    {
+      "time": 74.091,
+      "ring": "R",
+      "angle": 2,
+      "hold": 0.567
     },
     {
       "time": 74.901,
       "ring": "R",
-      "angle": 135
+      "angle": 152
     },
     {
       "time": 75.701,
       "ring": "L",
-      "angle": 315
-    },
-    {
-      "time": 76.555,
-      "ring": "R",
-      "angle": 225
+      "angle": 122,
+      "to": 52,
+      "hold": 0.641
     },
     {
       "time": 76.555,
       "ring": "L",
-      "angle": 122,
-      "hold": 0.575
+      "angle": 22,
+      "mod": "L1"
     },
     {
       "time": 76.555,
       "ring": "R",
-      "angle": 302,
-      "hold": 0.575
+      "angle": 52
     },
     {
       "time": 77.376,
       "ring": "R",
-      "angle": 92
+      "angle": 352,
+      "to": 282,
+      "hold": 0.64
     },
     {
       "time": 78.229,
       "ring": "L",
-      "angle": 62,
-      "to": 352,
-      "hold": 0.656
+      "angle": 282
     },
     {
       "time": 79.104,
       "ring": "R",
-      "angle": 352
+      "angle": 252
     },
     {
       "time": 80,
       "ring": "L",
-      "angle": 322,
-      "mod": "L1"
-    },
-    {
-      "time": 80.747,
-      "ring": "R",
-      "angle": 292,
-      "to": 222,
-      "hold": 0
+      "angle": 270
     },
     {
       "time": 80.747,
       "ring": "L",
-      "angle": 222
+      "angle": 270
+    },
+    {
+      "time": 80.747,
+      "ring": "R",
+      "angle": 90
     },
     {
       "time": 81.632,
       "ring": "R",
-      "angle": 192
-    },
-    {
-      "time": 82.581,
-      "ring": "L",
-      "angle": 270
-    },
-    {
-      "time": 82.581,
-      "ring": "R",
       "angle": 90
     },
     {
       "time": 82.581,
       "ring": "L",
-      "angle": 270
+      "center": true,
+      "hold": 0.608
     },
     {
       "time": 82.581,
       "ring": "R",
-      "angle": 90
+      "center": true,
+      "hold": 0.608
     },
     {
       "time": 83.595,
@@ -712,68 +685,79 @@
     {
       "time": 85.408,
       "ring": "L",
-      "angle": 270
+      "angle": 72,
+      "hold": 0.694
+    },
+    {
+      "time": 85.408,
+      "ring": "R",
+      "angle": 252,
+      "hold": 0.694
     },
     {
       "time": 86.4,
       "ring": "R",
-      "angle": 90
+      "angle": 42
     },
     {
       "time": 87.179,
       "ring": "L",
-      "angle": 42,
-      "hold": 0.657
+      "angle": 12,
+      "to": 302,
+      "hold": 0
     },
     {
       "time": 87.179,
       "ring": "R",
-      "angle": 222,
-      "hold": 0.657
+      "angle": 302
     },
     {
       "time": 88.117,
-      "ring": "R",
-      "angle": 12
+      "ring": "L",
+      "angle": 272
     },
     {
       "time": 88.992,
-      "ring": "L",
-      "angle": 342,
-      "to": 272,
+      "ring": "R",
+      "angle": 242,
+      "to": 172,
       "hold": 0.616
     },
     {
       "time": 89.813,
-      "ring": "R",
-      "angle": 272
+      "ring": "L",
+      "angle": 172
     },
     {
       "time": 89.813,
+      "ring": "R",
+      "angle": 142
+    },
+    {
+      "time": 90.688,
       "ring": "L",
-      "angle": 242
+      "angle": 180
     },
     {
       "time": 90.688,
       "ring": "R",
-      "angle": 212,
-      "to": 142,
-      "hold": 0.752
+      "angle": 0
     },
     {
       "time": 91.691,
       "ring": "L",
-      "angle": 142
+      "angle": 180
     },
     {
       "time": 92.619,
       "ring": "R",
-      "angle": 112
+      "angle": 0
     },
     {
       "time": 93.461,
       "ring": "L",
-      "angle": 180
+      "angle": 180,
+      "mod": "R1"
     },
     {
       "time": 94.293,
@@ -791,79 +775,77 @@
       "angle": 0
     },
     {
-      "time": 95.296,
+      "time": 96.171,
       "ring": "L",
-      "angle": 180,
-      "mod": "R1"
+      "angle": 352,
+      "hold": 0.627
     },
     {
       "time": 96.171,
       "ring": "R",
-      "angle": 0
+      "angle": 172,
+      "hold": 0.627
     },
     {
       "time": 97.067,
-      "ring": "L",
-      "angle": 180
+      "ring": "R",
+      "angle": 322
     },
     {
       "time": 98.016,
-      "ring": "R",
-      "angle": 0
+      "ring": "L",
+      "angle": 292,
+      "to": 222,
+      "hold": 0.672
     },
     {
       "time": 98.912,
       "ring": "L",
-      "angle": 322,
-      "hold": 0.315
-    },
-    {
-      "time": 98.912,
-      "ring": "R",
-      "angle": 142,
-      "hold": 0.315
-    },
-    {
-      "time": 98.912,
-      "ring": "R",
-      "angle": 292,
+      "angle": 192,
       "spin": 2,
       "hold": 0.954
     },
     {
+      "time": 98.912,
+      "ring": "R",
+      "angle": 222
+    },
+    {
       "time": 100.075,
-      "ring": "L",
-      "angle": 252,
-      "to": 182,
+      "ring": "R",
+      "angle": 152,
+      "to": 82,
       "hold": 0.696
     },
     {
       "time": 101.003,
-      "ring": "R",
-      "angle": 182
+      "ring": "L",
+      "angle": 82
     },
     {
       "time": 101.899,
       "ring": "L",
-      "angle": 152,
-      "hold": 0.498
+      "angle": 45
+    },
+    {
+      "time": 101.899,
+      "ring": "R",
+      "angle": 52
     },
     {
       "time": 102.805,
       "ring": "R",
-      "angle": 124,
-      "to": 54,
-      "hold": 0.648
+      "angle": 135
     },
     {
       "time": 103.669,
       "ring": "L",
-      "angle": 54
+      "angle": 315
     },
     {
       "time": 103.669,
       "ring": "R",
-      "angle": 24
+      "angle": 225
     },
     {
       "time": 104.576,
@@ -888,81 +870,69 @@
     {
       "time": 108.043,
       "ring": "L",
-      "angle": 45
+      "angle": 262,
+      "hold": 0.315
     },
     {
       "time": 108.043,
       "ring": "R",
-      "angle": 135
+      "angle": 82,
+      "hold": 0.315
     },
     {
       "time": 109.003,
       "ring": "L",
-      "angle": 315
-    },
-    {
-      "time": 109.888,
-      "ring": "R",
-      "angle": 225
+      "angle": 202,
+      "to": 132,
+      "hold": 0.664
     },
     {
       "time": 109.888,
       "ring": "L",
-      "angle": 234,
-      "hold": 0.709
+      "angle": 102,
+      "mod": "square"
     },
     {
       "time": 109.888,
       "ring": "R",
-      "angle": 54,
-      "hold": 0.709
+      "angle": 132
     },
     {
       "time": 110.901,
       "ring": "R",
-      "angle": 204
+      "angle": 72,
+      "to": 2,
+      "hold": 0.648
     },
     {
       "time": 111.765,
       "ring": "L",
-      "angle": 174,
-      "to": 104,
-      "hold": 0.68
+      "angle": 2
+    },
+    {
+      "time": 112.672,
+      "ring": "L",
+      "angle": 270
     },
     {
       "time": 112.672,
       "ring": "R",
-      "angle": 104
+      "angle": 332
     },
     {
       "time": 113.525,
       "ring": "L",
-      "angle": 74,
-      "mod": "square"
+      "angle": 270
     },
     {
       "time": 113.525,
       "ring": "R",
-      "angle": 44,
-      "to": 334,
-      "hold": 0
-    },
-    {
-      "time": 113.525,
-      "ring": "L",
-      "center": true,
-      "hold": 0.614
-    },
-    {
-      "time": 113.525,
-      "ring": "R",
-      "center": true,
-      "hold": 0.614
+      "angle": 90
     },
     {
       "time": 114.549,
       "ring": "R",
-      "angle": 334
+      "angle": 90
     },
     {
       "time": 115.403,
@@ -987,74 +957,85 @@
     {
       "time": 118.155,
       "ring": "L",
-      "angle": 270
+      "angle": 182,
+      "hold": 0.597
+    },
+    {
+      "time": 118.155,
+      "ring": "R",
+      "angle": 2,
+      "hold": 0.597
     },
     {
       "time": 119.008,
       "ring": "R",
-      "angle": 90
+      "angle": 152
     },
     {
       "time": 120,
       "ring": "L",
-      "angle": 270
+      "angle": 122,
+      "to": 52,
+      "hold": 0
     },
     {
       "time": 120,
       "ring": "R",
-      "angle": 90
+      "angle": 52
     },
     {
       "time": 120.853,
       "ring": "L",
-      "angle": 184,
-      "hold": 0.732
+      "center": true,
+      "hold": 0.628
     },
     {
       "time": 120.853,
       "ring": "R",
-      "angle": 4,
-      "hold": 0.732
+      "center": true,
+      "hold": 0.628
+    },
+    {
+      "time": 121.899,
+      "ring": "L",
+      "angle": 352
     },
     {
       "time": 121.899,
       "ring": "R",
-      "angle": 154
+      "angle": 322
     },
     {
       "time": 122.773,
       "ring": "L",
-      "angle": 124,
-      "to": 54,
-      "hold": 0.648
+      "angle": 180
     },
     {
       "time": 123.637,
       "ring": "R",
-      "angle": 54
+      "angle": 0
     },
     {
       "time": 124.64,
       "ring": "L",
-      "angle": 24
+      "angle": 180
     },
     {
       "time": 124.64,
       "ring": "R",
-      "angle": 354,
-      "to": 284,
-      "hold": 0.664
+      "angle": 0
     },
     {
       "time": 125.525,
       "ring": "L",
-      "angle": 284
+      "angle": 180,
+      "mod": "triangle"
     },
     {
       "time": 125.525,
       "ring": "R",
-      "angle": 254,
-      "spin": 3,
+      "angle": 0,
+      "spin": 2,
       "hold": 0.963
     },
     {
@@ -1064,118 +1045,101 @@
     },
     {
       "time": 127.552,
-      "ring": "R",
-      "angle": 0
-    },
-    {
-      "time": 127.552,
       "ring": "L",
-      "center": true,
-      "hold": 0.634
+      "angle": 182,
+      "hold": 0.739
     },
     {
       "time": 127.552,
       "ring": "R",
-      "center": true,
-      "hold": 0.634
+      "angle": 2,
+      "hold": 0.739
     },
     {
       "time": 128.608,
       "ring": "R",
-      "angle": 0
+      "angle": 152
     },
     {
       "time": 129.547,
       "ring": "L",
-      "angle": 180,
-      "mod": "triangle"
+      "angle": 122,
+      "to": 52,
+      "hold": 0.576
     },
     {
       "time": 130.315,
       "ring": "R",
-      "angle": 0
+      "angle": 52
     },
     {
       "time": 131.179,
       "ring": "L",
-      "angle": 180
+      "angle": 22
     },
     {
       "time": 131.179,
       "ring": "R",
-      "angle": 0
+      "angle": 352,
+      "to": 282,
+      "hold": 0.752
     },
     {
       "time": 132.181,
       "ring": "L",
-      "angle": 64,
-      "hold": 0.315
+      "angle": 282
     },
     {
       "time": 132.181,
       "ring": "R",
-      "angle": 244,
-      "hold": 0.315
-    },
-    {
-      "time": 132.181,
-      "ring": "R",
-      "angle": 34
+      "angle": 252
     },
     {
       "time": 133.205,
       "ring": "L",
-      "angle": 4,
-      "to": 294,
-      "hold": 0.776
+      "angle": 45
     },
     {
       "time": 134.24,
       "ring": "R",
-      "angle": 294
+      "angle": 135
     },
     {
       "time": 135.115,
       "ring": "L",
-      "angle": 264,
-      "hold": 0.458
+      "angle": 315
     },
     {
       "time": 135.947,
       "ring": "R",
-      "angle": 236,
-      "to": 166,
-      "hold": 0.744
+      "angle": 225
     },
     {
       "time": 136.939,
       "ring": "L",
-      "angle": 166
+      "angle": 45
     },
     {
       "time": 137.867,
       "ring": "R",
-      "angle": 136
+      "angle": 135
     },
     {
       "time": 138.816,
       "ring": "L",
-      "angle": 45
-    },
-    {
-      "time": 139.723,
-      "ring": "R",
-      "angle": 135
+      "angle": 315
     },
     {
       "time": 139.723,
       "ring": "L",
-      "angle": 315
+      "angle": 102,
+      "hold": 0.627
     },
     {
-      "time": 140.619,
+      "time": 139.723,
       "ring": "R",
-      "angle": 225
+      "angle": 282,
+      "hold": 0.627
     },
     {
       "time": 140.619,
@@ -1192,172 +1156,171 @@
     {
       "time": 141.664,
       "ring": "R",
-      "angle": 135
+      "angle": 42
     },
     {
       "time": 142.603,
       "ring": "L",
-      "angle": 315
-    },
-    {
-      "time": 143.488,
-      "ring": "R",
-      "angle": 225
-    },
-    {
-      "time": 144.405,
-      "ring": "L",
-      "angle": 316,
-      "hold": 0.568
-    },
-    {
-      "time": 144.405,
-      "ring": "R",
-      "angle": 136,
-      "hold": 0.568
-    },
-    {
-      "time": 145.216,
-      "ring": "R",
-      "angle": 286
-    },
-    {
-      "time": 145.216,
-      "ring": "L",
-      "angle": 256,
-      "to": 186,
-      "hold": 0
-    },
-    {
-      "time": 145.216,
-      "ring": "R",
-      "angle": 186
-    },
-    {
-      "time": 146.123,
-      "ring": "L",
-      "angle": 156,
+      "angle": 12,
       "mod": "L1"
     },
     {
-      "time": 147.029,
+      "time": 142.603,
       "ring": "R",
-      "angle": 126,
-      "to": 56,
+      "angle": 342,
+      "to": 272,
       "hold": 0.664
     },
     {
-      "time": 147.915,
+      "time": 143.488,
       "ring": "L",
-      "angle": 56
+      "angle": 272
+    },
+    {
+      "time": 144.405,
+      "ring": "L",
+      "angle": 270
+    },
+    {
+      "time": 144.405,
+      "ring": "R",
+      "angle": 242
+    },
+    {
+      "time": 145.216,
+      "ring": "L",
+      "angle": 270
+    },
+    {
+      "time": 145.216,
+      "ring": "R",
+      "angle": 90
+    },
+    {
+      "time": 146.123,
+      "ring": "R",
+      "angle": 90
+    },
+    {
+      "time": 147.029,
+      "ring": "L",
+      "angle": 270
+    },
+    {
+      "time": 147.915,
+      "ring": "R",
+      "angle": 90
     },
     {
       "time": 148.843,
-      "ring": "R",
-      "angle": 26
-    },
-    {
-      "time": 149.717,
       "ring": "L",
       "angle": 270
     },
     {
       "time": 149.717,
       "ring": "L",
-      "center": true,
-      "hold": 0.653
+      "angle": 92,
+      "hold": 0.762
     },
     {
       "time": 149.717,
       "ring": "R",
-      "center": true,
-      "hold": 0.653
+      "angle": 272,
+      "hold": 0.762
     },
     {
       "time": 150.805,
-      "ring": "L",
-      "angle": 270
+      "ring": "R",
+      "angle": 62
     },
     {
       "time": 151.744,
-      "ring": "R",
-      "angle": 90
+      "ring": "L",
+      "angle": 32,
+      "to": 322,
+      "hold": 0.664
     },
     {
       "time": 152.629,
       "ring": "L",
-      "angle": 270
+      "angle": 292
+    },
+    {
+      "time": 152.629,
+      "ring": "R",
+      "angle": 322
     },
     {
       "time": 153.611,
       "ring": "R",
-      "angle": 90
+      "angle": 262,
+      "to": 192,
+      "hold": 0.616
     },
     {
       "time": 154.432,
       "ring": "L",
-      "angle": 270
+      "angle": 192
     },
     {
       "time": 154.432,
       "ring": "R",
-      "angle": 90
+      "angle": 162
     },
     {
       "time": 155.328,
       "ring": "L",
-      "angle": 206,
-      "hold": 0.315
+      "center": true,
+      "hold": 0.621
     },
     {
       "time": 155.328,
       "ring": "R",
-      "angle": 26,
-      "hold": 0.315
-    },
-    {
-      "time": 155.328,
-      "ring": "R",
-      "angle": 176
+      "center": true,
+      "hold": 0.621
     },
     {
       "time": 156.363,
       "ring": "L",
-      "angle": 146,
-      "to": 76,
-      "hold": 0.648
-    },
-    {
-      "time": 157.227,
-      "ring": "R",
-      "angle": 76
+      "angle": 180
     },
     {
       "time": 157.227,
       "ring": "L",
-      "angle": 46
+      "angle": 180,
+      "mod": "R1"
+    },
+    {
+      "time": 157.227,
+      "ring": "R",
+      "angle": 0
     },
     {
       "time": 158.048,
       "ring": "R",
-      "angle": 16,
-      "to": 306,
-      "hold": 0.704
+      "angle": 0
     },
     {
       "time": 158.987,
       "ring": "L",
-      "angle": 306
+      "angle": 180
     },
     {
       "time": 158.987,
       "ring": "R",
-      "angle": 276
+      "angle": 0
     },
     {
       "time": 159.936,
       "ring": "L",
-      "angle": 180
+      "angle": 342,
+      "hold": 0.84
+    },
+    {
+      "time": 159.936,
+      "ring": "R",
+      "angle": 162,
+      "hold": 0.84
     }
   ]
 }

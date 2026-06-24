@@ -74,7 +74,26 @@ for (let p = 2; p < totalPhrases; p += 2) {
   if (!spinPhrases.has(p)) dualHoldPhrases.add(p);
 }
 
-const notes = [];
+// Resolve OVERLAPS so notes never pile on the same eye: drop same-ring notes <70 ms apart, and clamp
+// each sustained span to end before the next same-ring note.
+function fixOverlaps(all) {
+  const kept = [];
+  for (const ring of ['L', 'R']) {
+    const a = all.filter((n) => n.ring === ring).sort((x, y) => x.time - y.time);
+    const pri = (x) => x.center ? 4 : x.spin > 0 ? 3 : (x.hold > 0 || x.to != null) ? 2 : 1;
+    const r = [];
+    for (const n of a) {
+      const prev = r[r.length - 1];
+      if (prev && n.time - prev.time < 0.07) { if (pri(n) > pri(prev)) r[r.length - 1] = n; continue; }
+      r.push(n);
+    }
+    for (let i = 0; i < r.length; i++) { const n = r[i], next = r[i + 1]; if (n.hold && next) { const m = next.time - 0.08; if (n.time + n.hold > m) n.hold = Math.max(0.12, +(m - n.time).toFixed(3)); } }
+    kept.push(...r);
+  }
+  return kept.sort((x, y) => x.time - y.time);
+}
+
+let notes = [];
 let heading = 0;       // running target heading (deg) handed note-to-note
 let sweepDir = 1;      // flips per phrase so the stick path snakes back and forth
 let hand = 0;          // running emitted-note counter -> L/R alternates on actual notes (not beats)
@@ -155,6 +174,8 @@ for (let i = 0; i < beats.length; i++) {
 
   notes.push(note);
 }
+
+notes = fixOverlaps(notes);   // no two notes piling on the same eye; holds end before the next note
 
 const out = {
   meta: {

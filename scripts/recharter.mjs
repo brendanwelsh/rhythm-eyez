@@ -78,7 +78,30 @@ function phraseMotif(phrase) {
 }
 function motifAngle(motif, pos) { const a = MOTIF_ANGLE[motif]; return a[pos % a.length]; }
 
-const notes = [];
+// Resolve OVERLAPS so notes never pile on the same eye: on each ring, drop any note landing within
+// ~70 ms of the previous one (one stick can only be one place at a time), and clamp every sustained
+// span so it ends before the next same-ring note begins.
+function fixOverlaps(all) {
+  const kept = [];
+  for (const ring of ['L', 'R']) {
+    const a = all.filter((n) => n.ring === ring).sort((x, y) => x.time - y.time);
+    const pri = (x) => x.center ? 4 : x.spin > 0 ? 3 : (x.hold > 0 || x.to != null) ? 2 : 1;  // keep the more important note
+    const r = [];
+    for (const n of a) {
+      const prev = r[r.length - 1];
+      if (prev && n.time - prev.time < 0.07) { if (pri(n) > pri(prev)) r[r.length - 1] = n; continue; }
+      r.push(n);
+    }
+    for (let i = 0; i < r.length; i++) {
+      const n = r[i], next = r[i + 1];
+      if (n.hold && next) { const maxEnd = next.time - 0.08; if (n.time + n.hold > maxEnd) n.hold = Math.max(0.12, +(maxEnd - n.time).toFixed(3)); }
+    }
+    kept.push(...r);
+  }
+  return kept.sort((x, y) => x.time - y.time);
+}
+
+let notes = [];
 let heading = 0;          // running target heading (degrees) — handed note-to-note for flow
 
 for (let k = 0; k < times.length; k++) {
@@ -144,6 +167,8 @@ for (let k = 0; k < times.length; k++) {
 
   notes.push(note);
 }
+
+notes = fixOverlaps(notes);   // no two notes piling on the same eye; holds end before the next note
 
 const out = {
   meta: { ...src.meta, difficulty: 'Normal' },
