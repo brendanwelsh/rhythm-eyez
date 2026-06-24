@@ -44,8 +44,8 @@ const COLVAR = {
   L: { tap: '#00f0ff', hold: '#2f6bff', slide: '#00b3ff', spin: '#7a4dff', center: '#aef6ff' },
   R: { tap: '#ff2bd6', hold: '#ff4d7a', slide: '#ff66c4', spin: '#c94dff', center: '#ffc2ec' },
 };
-const HIT_FRAC = 0.5;   // notes LAND where the pupil reaches (½ the eye radius), not at the rim — so
-                        // the eye looking at the note and the note's landing spot are the same point.
+const HIT_FRAC = 0.64;  // the target slot sits ~2/3 of the way out — exactly where the pupil reaches.
+                        // You aim the pupil INTO the slot; when the note arrives there, the eye breaks it.
 
 export class Renderer {
   constructor(canvas) {
@@ -238,14 +238,22 @@ export class Renderer {
     ctx.restore();
   }
 
-  // The landing TARGET: a clean thin glowing ring at the hit-point, showing where to bring the pupil.
+  // The target SLOT: the glowing ring you must aim the PUPIL into for this note. Brightens as the note
+  // nears, and flares white when the pupil is in it (n.lit) — "where your eye must be on the press".
   _hitRing(eye, a, col, lit, p, rr) {
     const { ctx } = this; const hp = this._hitPt(eye, a);
+    const near = Math.min(1, p * 1.7);
     ctx.save(); ctx.lineCap = 'round';
-    ctx.shadowColor = lit ? '#ffffff' : col; ctx.shadowBlur = lit ? 16 : 7;
-    ctx.strokeStyle = this._alpha(lit ? '#ffffff' : col, (lit ? 1 : 0.45) * Math.min(1, p * 2));
-    ctx.lineWidth = eye.r * 0.028;
-    ctx.beginPath(); ctx.arc(hp.x, hp.y, rr, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    // bold slot ring
+    ctx.shadowColor = lit ? '#ffffff' : col; ctx.shadowBlur = lit ? 22 : 10;
+    ctx.strokeStyle = this._alpha(lit ? '#ffffff' : col, (lit ? 1 : 0.6) * near);
+    ctx.lineWidth = eye.r * 0.04;
+    ctx.beginPath(); ctx.arc(hp.x, hp.y, rr, 0, Math.PI * 2); ctx.stroke();
+    // a crisp thin inner reticle so it reads as a precise "slot" to dock the pupil into
+    ctx.shadowBlur = 0; ctx.strokeStyle = this._alpha(lit ? '#ffffff' : col, 0.45 * near);
+    ctx.lineWidth = Math.max(1, eye.r * 0.012);
+    ctx.beginPath(); ctx.arc(hp.x, hp.y, rr * 0.6, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
     return hp;
   }
 
@@ -302,7 +310,7 @@ export class Renderer {
   _noteTap(eye, n, songTime, p, dt) {
     const c = this._noteCol(n.ring, n.type);
     const near = Math.abs(dt) < 0.1;
-    this._hitRing(eye, n.angle, c, n.lit, p, eye.r * 0.14);
+    this._hitRing(eye, n.angle, c, n.lit, p, eye.r * 0.2);   // the slot the pupil docks into
     const head = this._runwayPt(eye, n.angle, p);
     const tail = this._runwayPt(eye, n.angle, Math.max(0, p - 0.28));
     // tapered comet trail (several fading orbs from tail → head)
@@ -446,20 +454,20 @@ export class Renderer {
       const age = (songTime - e.t0) / e.dur;
       const c = e.judgement === 'perfect' ? COL.perfect : e.judgement === 'good' ? COL.good : COL.miss;
       const v = e.angle != null ? angleVec(e.angle) : { x: 0, y: -1 };
-      const rx = eye.x + v.x * eye.r, ry = eye.y + v.y * eye.r;
-      // expanding shockwave ring (bigger/brighter on a perfect)
-      const big = e.judgement === 'perfect' ? 2.4 : 1.6;
-      ctx.save();
+      const rx = eye.x + v.x * eye.r * HIT_FRAC, ry = eye.y + v.y * eye.r * HIT_FRAC;   // at the slot
+      ctx.save(); ctx.lineCap = 'round';
+      // white flash as the note BREAKS, then a shatter shockwave ring
+      if (e.judgement !== 'miss' && age < 0.3) this._orb(rx, ry, eye.r * (0.32 - age * 0.6) * (e.judgement === 'perfect' ? 1.3 : 1), '#ffffff', true, 1 - age * 3.3);
+      const big = e.judgement === 'perfect' ? 2.6 : 1.7;
       ctx.shadowColor = c; ctx.shadowBlur = 16 * (1 - age);
-      ctx.beginPath(); ctx.arc(rx, ry, eye.r * 0.25 * (1 + age * big), 0, Math.PI * 2);
-      ctx.strokeStyle = this._alpha(c, (1 - age) * 0.9); ctx.lineWidth = 5 * (1 - age); ctx.stroke();
-      // spark particles scattering outward
+      ctx.beginPath(); ctx.arc(rx, ry, eye.r * 0.16 * (1 + age * big), 0, Math.PI * 2);
+      ctx.strokeStyle = this._alpha(c, (1 - age) * 0.9); ctx.lineWidth = eye.r * 0.05 * (1 - age); ctx.stroke();
+      // shards flying outward — the note shattering apart (white at first, then its colour)
       if (e.spark) {
-        ctx.fillStyle = this._alpha(c, (1 - age) * 0.95);
         for (const s of e.spark) {
-          const d = eye.r * (0.2 + age * 1.6 * s.sp);
-          const sx = rx + Math.cos(s.a) * d, sy = ry + Math.sin(s.a) * d;
-          ctx.beginPath(); ctx.arc(sx, sy, eye.r * 0.05 * (1 - age), 0, Math.PI * 2); ctx.fill();
+          const d0 = eye.r * (0.12 + age * 1.5 * s.sp), d1 = d0 + eye.r * 0.13 * (1 - age);
+          ctx.strokeStyle = this._alpha(age < 0.3 ? '#ffffff' : c, (1 - age) * 0.95); ctx.lineWidth = eye.r * 0.03 * (1 - age);
+          ctx.beginPath(); ctx.moveTo(rx + Math.cos(s.a) * d0, ry + Math.sin(s.a) * d0); ctx.lineTo(rx + Math.cos(s.a) * d1, ry + Math.sin(s.a) * d1); ctx.stroke();
         }
       }
       ctx.restore();

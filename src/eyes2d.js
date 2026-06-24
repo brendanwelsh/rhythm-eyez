@@ -8,7 +8,7 @@
 // the note overlay, so alignment is exact. Same API as the old 3D stage: update(state,dt), render(),
 // chomp(ring), and `.screen = { L:{x,y,r}, R:{x,y,r} }`.
 
-const REACH = 0.5;     // pupil travels up to 0.5·r from centre at full stick (stays inside the globe)
+const REACH = 0.64;    // pupil travels ~2/3 of the radius at full stick — out to the note's target slot
 const IRIS_TINT = { L: '#1fd8ff', R: '#ff3bd6' };   // cyan-L / magenta-R, applied to the grey iris
 
 export class Eyes2D {
