@@ -117,8 +117,8 @@ export class Renderer {
       this._effects(ring, eyes[ring], songTime);
     }
 
-    // HUD at the top edge: progress bar + score / combo+title / accuracy
-    this._topbar(scorer, chart, songTime);
+    // HUD at the top edge (only while a song is loaded — keep the splash/menus clean)
+    if (chart) this._topbar(scorer, chart, songTime);
 
     if (this._banner) this._drawBanner();
     if (chart && songTime < 0) this._countIn(songTime);

@@ -77,10 +77,12 @@ class Game {
   //   #t=20   → load the base chart and FREEZE it at song-time 20s (notes drawn statically, the
   //             demo aims the eyes at them) — lets a screenshot show note shapes + alignment
   //   #demo   → run the live attract demo (needs a real clock; for an actual browser, not headless)
+  //   #splash → just reveal the title screen (boot gate removed) so a screenshot shows the splash
   _dev(mode) {
     const boot = this._el('boot'); if (boot) boot.classList.add('gone');
-    for (const s of document.querySelectorAll('.screen')) s.classList.add('hidden');
     this.audio.resume().catch(() => {});
+    if (mode.includes('splash')) return;   // keep the title screen visible
+    for (const s of document.querySelectorAll('.screen')) s.classList.add('hidden');
     const m = mode.match(/t=?(\d+(?:\.\d+)?)/);
     if (!mode.includes('demo') && !m) return;
     // fetch ONLY the chart JSON (don't await the heavy audio — it stalls headless virtual-time)
@@ -655,6 +657,12 @@ class Game {
         if (n.type !== 'spin' || n.judged) continue;
         if (t >= n.time - 0.05 && t <= n.time + n.hold) st[n.ring].spinDir = n.spinDir || 1;
       }
+    } else if (this.state === 'title') {
+      // splash: the pupils lazily swirl in opposite circles (googly attract idle) — unless you're
+      // actively moving a stick (controller test), in which case that eye follows your stick.
+      const a = (this._lastRaf || 0) / 600;
+      if (!this.input.left || this.input.left.mag < 0.15) st.L.aim = { x: Math.cos(a) * 0.72, y: Math.sin(a) * 0.72 };
+      if (!this.input.right || this.input.right.mag < 0.15) st.R.aim = { x: Math.cos(-a) * 0.72, y: Math.sin(-a) * 0.72 };
     }
     return st;
   }

@@ -161,11 +161,14 @@ html, body {
 }
 .screen.hidden { display: none; }
 
-/* Splash: lighter veil so the 3D eyeballs glare through behind the title. */
+/* Splash: title up top, the circling eyes are the hero in the CENTRE, controls at the bottom. The
+   veil is lightest in the middle so the eyes glare through, darker at the edges so text reads. */
 #title {
-  justify-content: flex-start; padding-top: 5vh; padding-bottom: 2vh; gap: 8px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.05) 100%);
+  justify-content: space-between; padding: 4.5vh 6vw 5vh; gap: 12px;
+  background: radial-gradient(125% 78% at 50% 48%, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.5) 68%, rgba(0,0,0,0.82) 100%);
 }
+.splash-top { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
+.splash-bottom { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
 
 h2 {
   font-family: 'Bungee', ui-monospace, sans-serif;
@@ -173,21 +176,22 @@ h2 {
   color: var(--text); text-shadow: 0 0 22px var(--r); animation: trip 9s linear infinite;
 }
 
-/* ---------- EYE BEATS title (Rubik Wet Paint, rainbow trip) ---------- */
-.eye-title { text-align: center; line-height: 0.95; margin: 2px 0; }
+/* ---------- RHYTHM EYEZ title (Rubik Wet Paint, rainbow trip) ---------- */
+.eye-title { text-align: center; line-height: 0.92; margin: 0; max-width: 100%; }
 .eye-main {
   display: block;
   font-family: 'Rubik Wet Paint', 'Eyeball', Impact, sans-serif; text-transform: uppercase;
-  font-size: clamp(44px, 12vw, 140px); letter-spacing: clamp(-1px, 0.2vw, 3px);
+  font-size: clamp(26px, 7.5vw, 92px); letter-spacing: clamp(0px, 0.3vw, 4px); line-height: 0.95;
+  overflow-wrap: anywhere;   /* wrap RHYTHM / EYEZ on very narrow screens instead of overflowing */
   color: #fff;
-  text-shadow: 0 0 8px #fff, 0 0 26px var(--l), 0 0 52px var(--r), 0 0 90px var(--acid);
+  text-shadow: 0 0 6px #fff, 0 0 22px var(--l), 0 0 44px var(--r), 0 0 72px var(--acid);
   animation: trip 7s linear infinite;
 }
-.eye-main .o { font-size: 0.92em; filter: drop-shadow(0 0 16px var(--acid)); animation: spin360 4s linear infinite; display: inline-block; }
+.eye-main .o { font-size: 0.86em; filter: drop-shadow(0 0 14px var(--acid)); animation: spin360 4s linear infinite; display: inline-block; }
 .eye-sub {
-  display: block; margin-top: 10px;
+  display: block; margin-top: 8px;
   font-family: 'Bungee', ui-monospace, monospace; text-transform: uppercase;
-  font-size: clamp(10px, 2vw, 16px); letter-spacing: clamp(1px, 0.5vw, 5px);
+  font-size: clamp(9px, 1.7vw, 15px); letter-spacing: clamp(1px, 0.45vw, 5px);
   color: var(--acid); text-shadow: 0 0 16px rgba(200,255,0,0.6);
 }
 /* rainbow hue-cycle the whole title glow — the LSD trip */
