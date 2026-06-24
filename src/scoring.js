@@ -10,7 +10,7 @@
 //
 // All times in seconds, all driven off AudioEngine.time via the songTime passed each frame.
 
-import { noteTargetAngle, wrapPi } from './chart.js';
+import { noteTargetAngle, noteTargetVec, wrapPi } from './chart.js';
 
 export const WINDOWS = { perfect: 0.05, good: 0.13 };  // tap timing windows (± seconds)
 const SCORE = { perfect: 300, good: 100, miss: 0 };
@@ -28,17 +28,19 @@ export const PRESENCE_MAG = 0.42;       // stick must be deflected at least this
 export const CENTER_MAG = 0.28;         // for a CENTER note the stick must be BELOW this (neutral)
 
 // PROXIMITY judging — the core of the feel: hit quality = how close the PUPIL (= the stick position)
-// is to the note's target point, in stick-space. The note's spot is the unit vector (cos,sin); the
-// pupil is (stick.x, stick.y). Distance 0 = pupil dead-on the note; ~1 = stick centred; 2 = opposite.
-// So you must actually move the eye ONTO the note. Combined with timing for taps. Scaled by difficulty.
-export const PERF_DIST = 0.40;          // pupil within this of the note → Perfect-quality proximity
-export const GOOD_DIST = 0.82;          // pupil within this → on the note (Good); beyond → off
+// is to the note's 2D target POINT inside the disc, in stick-space. The note sits at (mag·cos, mag·sin)
+// where mag is its distance-from-centre (0 = dead centre, 1 = edge); the pupil is (stick.x, stick.y).
+// Distance 0 = pupil dead-on the note. The window is deliberately SMALLER than a note's magnitude so
+// resting at centre can't satisfy a far note — you must actually move the eye ONTO the spot. Combined
+// with timing for taps. Scaled by difficulty.
+export const PERF_DIST = 0.26;          // pupil within this of the note point → Perfect-quality proximity
+export const GOOD_DIST = 0.50;          // pupil within this → on the note (Good); beyond → off
 
 /** Shortest absolute angle between two headings (radians, 0..π). */
 function angleGap(a, b) { return Math.abs(wrapPi(a - b)); }
 
-/** Distance from the pupil (stick position) to a note's target point (unit vector at `ang`). */
-function proxDist(s, ang) { const sx = s ? s.x : 0, sy = s ? s.y : 0; return Math.hypot(sx - Math.cos(ang), sy - Math.sin(ang)); }
+/** Distance from the pupil (stick position) to a note's 2D target point (tx, ty) in the unit disc. */
+function proxDist(s, tx, ty) { const sx = s ? s.x : 0, sy = s ? s.y : 0; return Math.hypot(sx - tx, sy - ty); }
 
 export class Scorer {
   constructor() {
@@ -145,7 +147,8 @@ export class Scorer {
         if (songTime < t0 - tapWin) continue;
         const err = songTime - t0;
         const modOk = n.mod ? input.heldMods().includes(n.mod) : true;
-        const d = proxDist(s, n.angle);                       // how close the pupil is to the note
+        const tv = noteTargetVec(n, songTime);
+        const d = proxDist(s, tv.x, tv.y);                    // how close the pupil is to the note point
         if (modOk && d <= goodDist) {
           n.lit = true;
           if (n._bestD == null || d < n._bestD) { n._bestD = d; n.bestErr = err; }   // best proximity + its timing
@@ -177,10 +180,10 @@ export class Scorer {
 
       // hold or slide: accrue time while the PUPIL is on the (possibly moving) target point
       if (songTime >= t0 && songTime <= t1) {
-        const target = noteTargetAngle(n, songTime);
+        const tv = noteTargetVec(n, songTime);
         const lim = n.type === 'slide' ? slideDist : goodDist;
         const modOk = n.mod ? input.heldMods().includes(n.mod) : true;
-        if (modOk && proxDist(s, target) <= lim) {
+        if (modOk && proxDist(s, tv.x, tv.y) <= lim) {
           n.lit = true;
           n._covered += dt;
           this.score += Math.round(SUSTAIN_RATE * dt);

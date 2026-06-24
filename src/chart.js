@@ -67,6 +67,24 @@ export function noteTargetAngle(note, t) {
   return note.angle;
 }
 
+/**
+ * The note's target as a 2D point inside the unit disc: { x, y, mag, angle }. The pupil is an
+ * ABSOLUTE cursor, so a note can sit ANYWHERE on the eye — `mag` 0 = dead centre, 1 = the edge.
+ * Slides sweep angle AND magnitude across the span (so the traced line can spiral in/out). This is
+ * the shared source of truth for scoring, rendering and the demo so they always agree.
+ */
+export function noteTargetVec(note, t) {
+  const a = noteTargetAngle(note, t);
+  const m0 = note.mag != null ? note.mag : 0.72;
+  let m = m0;
+  if (note.type === 'slide' && note.hold > 0) {
+    const u = Math.max(0, Math.min(1, (t - note.time) / note.hold));
+    const m1 = note.magTo != null ? note.magTo : m0;
+    m = m0 + (m1 - m0) * u;
+  }
+  return { x: m * Math.cos(a), y: m * Math.sin(a), mag: m, angle: a };
+}
+
 /** Human label for a direction (used in debug / fallback rendering). */
 export function dirArrowAngle(dir) {
   const v = dirVector(dir);
@@ -105,6 +123,12 @@ export function normalizeChart(raw) {
       if (isSpin && hold <= 0) hold = 1.2;             // spinners need a span; default ~1 bar-ish
       const type = isCenter ? 'center' : isSpin ? 'spin' : hasTo ? 'slide' : hold > 0 ? 'hold' : 'tap';
       const angleTo = hasTo ? (Number(n.to) * Math.PI) / 180 : angle;
+      // MAGNITUDE 0..1 — how far from the eye CENTRE the target sits (0 = dead centre, 1 = the edge).
+      // The pupil is an absolute cursor, so the note can be ANYWHERE on the eye. `magTo` is the slide
+      // end distance. Centre notes are mag 0; everything else defaults to ~0.72 (well out) if unset.
+      const clamp01 = (v) => Math.max(0, Math.min(1, v));
+      const mag = isCenter ? 0 : (n.mag != null && isFinite(n.mag) ? clamp01(Number(n.mag)) : 0.72);
+      const magTo = n.magTo != null && isFinite(n.magTo) ? clamp01(Number(n.magTo)) : mag;
       const spins = Number(n.spin) || 0;
       const spinsNeed = type === 'spin' ? (spins > 0 ? spins : Math.max(2, Math.round(hold * 2))) : 0;
       const spinDir = Number(n.spinDir) < 0 ? -1 : 1;  // which way the eye whirls (default CW)

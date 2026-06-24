@@ -101,6 +101,18 @@ function fixOverlaps(all) {
   return kept.sort((x, y) => x.time - y.time);
 }
 
+// MAGNITUDE per note — how far from the eye CENTRE the target sits (0..1). Notes land ALL OVER the
+// eye: a slow per-phrase "breathe" sets how far out the figure sits, a per-note ripple scatters them,
+// corner bursts and flicky bass-runs punch out to the edge, holds park mid-eye.
+function magFor(k, phrase, type, motif, dense) {
+  if (type === 'hold') return 0.52;
+  if (motif === 'corners') return 0.9;
+  if (dense) return 0.86;                                    // flicky run → out to the edge
+  const breathe = 0.55 + 0.33 * Math.sin(phrase * 0.7);
+  const ripple = 0.18 * Math.sin(k * 1.3);
+  return +Math.max(0.12, Math.min(0.96, breathe + ripple)).toFixed(3);
+}
+
 let notes = [];
 let heading = 0;          // running target heading (degrees) — handed note-to-note for flow
 
@@ -110,7 +122,10 @@ for (let k = 0; k < times.length; k++) {
   const phrase = Math.floor(k / 8);
   const pos = k % 8;                       // position within the 8-note phrase
   const dir = phrase % 2 === 0 ? 1 : -1;   // sweep direction flips each phrase
-  const ring = k % 2 === 0 ? 'L' : 'R';    // hands alternate
+  // ASYMMETRY: one eye LEADS each couple of phrases, carrying most of the figure, then the lead
+  // swaps — you feel the busy hand shift back and forth (very joystick-y), not a metronomic L/R/L/R.
+  const lead = (Math.floor(phrase / 2) % 2 === 0) ? 'L' : 'R';
+  const ring = (k % 5 < 3) ? lead : (lead === 'L' ? 'R' : 'L');   // ~3 of every 5 notes on the lead eye
 
   // --- CENTER REST: let go — both sticks return to neutral together ("breathe") --------------
   if (centerSet.has(k)) {
@@ -125,16 +140,18 @@ for (let k = 0; k < times.length; k++) {
     const span = +Math.min(Math.max(g, 0.45) * 0.7, 0.85).toFixed(3); // overlapping hold spans
     const aL = wrap360(heading);
     const aR = wrap360(heading + 180);     // opposite headings so the two eyes splay apart
-    notes.push({ time: +t.toFixed(3), ring: 'L', angle: aL, hold: span });
-    notes.push({ time: +t.toFixed(3), ring: 'R', angle: aR, hold: span });
+    notes.push({ time: +t.toFixed(3), ring: 'L', angle: aL, hold: span, mag: 0.55 });
+    notes.push({ time: +t.toFixed(3), ring: 'R', angle: aR, hold: span, mag: 0.55 });
     heading = wrap360(heading + 30 * dir); // advance the line for the next note
     continue;
   }
 
   // --- choose the note type for this slot -------------------------------------
   const motif = phraseMotif(phrase);
+  const dense = g < 0.3 && gapAfter(Math.max(0, k - 1)) < 0.34;       // fast onset run → FLICKY taps (the "bass" hits)
   let type;
   if (spinSet.has(k)) type = 'spin';
+  else if (dense) type = 'tap';                                      // heavy/fast bits stay snappy flicks
   else if (motif) type = 'tap';                                      // motif phrases are crisp tap figures
   else if (pos === 0 && g > 0.8) type = 'hold';                       // park on the downbeat
   else if (pos === 4 && phrase % 3 === 2 && g > 0.8) type = 'hold';   // a second park, occasionally
@@ -142,6 +159,7 @@ for (let k = 0; k < times.length; k++) {
   else type = 'tap';                                                  // staccato backbone
 
   const note = { time: +t.toFixed(3), ring, angle: motif ? motifAngle(motif, pos) : wrap360(heading) };
+  note.mag = magFor(k, phrase, type, motif, dense);                  // place it anywhere centre→edge
 
   if (type === 'spin') {
     note.spin = (phrase % 3 === 0) ? 3 : 2;
@@ -151,6 +169,7 @@ for (let k = 0; k < times.length; k++) {
     const to = wrap360(heading + 70 * dir);
     note.to = to;
     note.hold = +Math.min(g * 0.75, 0.95).toFixed(3);
+    note.magTo = +Math.max(0.14, Math.min(0.95, note.mag + 0.34 * dir)).toFixed(3);  // spiral in/out → a wiggly traced path
     heading = to;                                          // continue the line from where it ended
   } else if (type === 'hold') {
     note.hold = +Math.min(g * 0.55, 0.85).toFixed(3);
@@ -160,9 +179,11 @@ for (let k = 0; k < times.length; k++) {
     heading = wrap360(heading + 30 * dir);
   }
 
-  // accent modifiers — rare, only on taps/holds, never on the first few notes
-  if (k > 12 && pos === 4 && phrase % 3 === 1 && (type === 'tap' || type === 'hold')) {
-    note.mod = MOD_CYCLE[(phrase / 3 | 0) % MOD_CYCLE.length];
+  // SIDE-MATCHED TRIGGERS — frequent: a LEFT-eye note may need L1/L2, a RIGHT-eye note R1/R2 (so the
+  // trigger sits under the same hand as that stick). You hold it WHILE the pupil is on the spot. Put
+  // them on ~1 in 3 taps/holds, alternating the inner/outer trigger; never on the first few notes.
+  if (k > 8 && k % 3 === 0 && (type === 'tap' || type === 'hold')) {
+    note.mod = ring === 'L' ? (k % 6 === 0 ? 'L2' : 'L1') : (k % 6 === 0 ? 'R2' : 'R1');
   }
 
   notes.push(note);

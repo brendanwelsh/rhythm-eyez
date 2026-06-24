@@ -93,6 +93,15 @@ function fixOverlaps(all) {
   return kept.sort((x, y) => x.time - y.time);
 }
 
+// MAGNITUDE per note — how far from centre the target sits (0..1). Notes land ALL OVER the eye: a
+// slow per-phrase "breathe" + a per-note ripple; holds park mid-eye.
+function magFor(i, phrase, type) {
+  if (type === 'hold') return 0.52;
+  const breathe = 0.55 + 0.33 * Math.sin(phrase * 0.7);
+  const ripple = 0.18 * Math.sin(i * 1.3);
+  return +Math.max(0.12, Math.min(0.96, breathe + ripple)).toFixed(3);
+}
+
 let notes = [];
 let heading = 0;       // running target heading (deg) handed note-to-note
 let sweepDir = 1;      // flips per phrase so the stick path snakes back and forth
@@ -119,11 +128,11 @@ for (let i = 0; i < beats.length; i++) {
     const holdLen = round3(SEC_PER_BEAT * (both ? 3 : 2.5));
     if (both) {
       // both eyes spin together — two notes, one per ring, same time (self-balanced)
-      notes.push({ time: round3(t), ring: 'L', angle: wrap360(heading), spin: spinCount, hold: holdLen, spinDir });
-      notes.push({ time: round3(t), ring: 'R', angle: wrap360(heading + 180), spin: spinCount, hold: holdLen, spinDir: -spinDir });
+      notes.push({ time: round3(t), ring: 'L', angle: wrap360(heading), spin: spinCount, hold: holdLen, spinDir, mag: 0.6 });
+      notes.push({ time: round3(t), ring: 'R', angle: wrap360(heading + 180), spin: spinCount, hold: holdLen, spinDir: -spinDir, mag: 0.6 });
     } else {
       // solo-eye spin — just this ring rotates
-      notes.push({ time: round3(t), ring: hand % 2 === 0 ? 'L' : 'R', angle: wrap360(heading), spin: spinCount, hold: holdLen, spinDir });
+      notes.push({ time: round3(t), ring: hand % 2 === 0 ? 'L' : 'R', angle: wrap360(heading), spin: spinCount, hold: holdLen, spinDir, mag: 0.6 });
       hand++;
     }
     heading = wrap360(heading + 50 * sweepDir);
@@ -133,17 +142,20 @@ for (let i = 0; i < beats.length; i++) {
   // --- DUAL HOLD injection: park BOTH eyes on this phrase's downbeat (two notes, same time) ---
   if (dualHoldPhrases.has(phrase) && pos === 0) {
     const span = round3(SEC_PER_BEAT * 1.4); // overlapping ~1.5-beat parks on both rings
-    notes.push({ time: round3(t), ring: 'L', angle: wrap360(heading), hold: span });
-    notes.push({ time: round3(t), ring: 'R', angle: wrap360(heading + 180), hold: span });
+    notes.push({ time: round3(t), ring: 'L', angle: wrap360(heading), hold: span, mag: 0.55 });
+    notes.push({ time: round3(t), ring: 'R', angle: wrap360(heading + 180), hold: span, mag: 0.55 });
     // these consume the downbeat without advancing the L/R `hand` counter (self-balanced pair)
     heading = wrap360(heading + 30 * sweepDir);
     continue;
   }
 
-  // ring alternates on EMITTED notes (not beats) so rests can't skew the L/R balance
-  const ring = hand % 2 === 0 ? 'L' : 'R';
+  // ASYMMETRY: one eye LEADS each couple of phrases (carries ~3 of every 5 notes), then the lead
+  // swaps — the busy hand shifts back and forth instead of a metronomic L/R/L/R.
+  const lead = (Math.floor(phrase / 2) % 2 === 0) ? 'L' : 'R';
+  const ring = (hand % 5 < 3) ? lead : (lead === 'L' ? 'R' : 'L');
   hand++;
   const note = { time: round3(t), ring };
+  note.mag = magFor(i, phrase, type);                          // place it anywhere centre→edge
 
   if (type === 'center') {
     // CENTER beat — pull the stick to neutral. Lands on a downbeat for a "look straight" moment.
@@ -156,6 +168,7 @@ for (let i = 0; i < beats.length; i++) {
     note.angle = wrap360(heading);
     note.to = to;
     note.hold = round3(Math.min(SEC_PER_BEAT * 0.9, 0.95));
+    note.magTo = +Math.max(0.14, Math.min(0.95, note.mag + 0.34 * sweepDir)).toFixed(3);  // spiral in/out → wiggly path
     heading = to;                                  // continue the line from where it ended
   } else if (type === 'hold') {
     note.angle = wrap360(heading);
@@ -167,9 +180,10 @@ for (let i = 0; i < beats.length; i++) {
     heading = wrap360(heading + 30 * sweepDir);
   }
 
-  // --- shoulder-button accent — sprinkled on mid-phrase tap/hold (~5%) -------
-  if (i > 16 && pos === 5 && phrase % 2 === 1 && (type === 'tap' || type === 'hold')) {
-    note.mod = MOD_CYCLE[(phrase / 2 | 0) % MOD_CYCLE.length];
+  // SIDE-MATCHED TRIGGERS — frequent (~1 in 3 taps/holds): a LEFT-eye note needs L1/L2, a RIGHT-eye
+  // note R1/R2 (trigger under the same hand as the stick). Held WHILE the pupil is on the spot.
+  if (i > 12 && i % 3 === 0 && (type === 'tap' || type === 'hold')) {
+    note.mod = ring === 'L' ? (i % 6 === 0 ? 'L2' : 'L1') : (i % 6 === 0 ? 'R2' : 'R1');
   }
 
   notes.push(note);

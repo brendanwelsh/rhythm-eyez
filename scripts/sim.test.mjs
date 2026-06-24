@@ -2,7 +2,7 @@
 // Simulates a frame loop driving a fake GamepadInput, for each note type, and asserts that a
 // follower clears them while an idle player misses them. Run:  node scripts/sim.test.mjs
 
-import { normalizeChart, noteTargetAngle, angleVec } from '../src/chart.js';
+import { normalizeChart, noteTargetAngle, noteTargetVec, angleVec } from '../src/chart.js';
 import { Scorer, PRESENCE_MAG } from '../src/scoring.js';
 
 const FPS = 120, DT = 1 / FPS;
@@ -10,11 +10,10 @@ const FPS = 120, DT = 1 / FPS;
 // minimal stand-in for GamepadInput: just the fields the scorer reads
 function makeInput() { return { left: { x: 0, y: 0, mag: 0 }, right: { x: 0, y: 0, mag: 0 }, heldMods: () => [] }; }
 
-// aim a stick at a target angle (or spin), like the in-game demo autoplay
-function aim(input, ring, a, mag = 0.95) {
-  const v = angleVec(a);
-  input[ring === 'L' ? 'left' : 'right'] = { x: v.x * mag, y: v.y * mag, mag };
-}
+// drop the stick at an absolute (x,y) inside the disc — the pupil is an absolute cursor
+function aimVec(input, ring, x, y) { input[ring === 'L' ? 'left' : 'right'] = { x, y, mag: Math.hypot(x, y) }; }
+// aim a stick at a target angle at full-ish deflection (used for spins)
+function aim(input, ring, a, mag = 0.95) { const v = angleVec(a); aimVec(input, ring, v.x * mag, v.y * mag); }
 function relax(input, ring) { input[ring === 'L' ? 'left' : 'right'] = { x: 0, y: 0, mag: 0 }; }
 
 function run(rawNotes, { follow }) {
@@ -35,7 +34,7 @@ function run(rawNotes, { follow }) {
       }
       if (!best || bd > 0.4) { relax(input, ring); continue; }
       if (best.type === 'spin') aim(input, ring, t * 16);
-      else aim(input, ring, noteTargetAngle(best, t));
+      else { const tv = noteTargetVec(best, t); aimVec(input, ring, tv.x, tv.y); }
     }
     scorer.update(chart.notes, input, t, DT);
     scorer.takeEvents();

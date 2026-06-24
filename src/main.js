@@ -5,7 +5,7 @@ import { GamepadInput } from './input.js';
 import { Renderer } from './render.js';
 import { Eyes2D } from './eyes2d.js';
 import { Scorer } from './scoring.js';
-import { normalizeChart, angleVec, noteTargetAngle } from './chart.js';
+import { normalizeChart, angleVec, noteTargetAngle, noteTargetVec } from './chart.js';
 import { generateBeatmap, chartToJSON } from './beatgen.js';
 
 const LEAD_IN = 3.0; // seconds of "3..2..1" count-in before the music
@@ -560,13 +560,15 @@ class Game {
     }
     if (!best || bestDist > 0.7) return null;
     if (best.type === 'center') return null;                     // CENTER rest → let go to neutral
-    let a;
-    if (best.type === 'spin') a = songTime * 14;                 // whirl to fill the gauge
-    else a = noteTargetAngle(best, songTime);                    // park / trace the (moving) target
-    const v = angleVec(a);
-    // full deflection inside the window, easing in as the note approaches
-    const mag = bestDist <= 0.16 ? 1.0 : Math.max(0.3, 1.0 - (bestDist - 0.16) * 1.1);  // reach FULLY onto the note
-    return { x: v.x, y: v.y, mag, mod: bestDist <= 0.2 ? best.mod : null };
+    const mod = bestDist <= 0.2 ? best.mod : null;
+    if (best.type === 'spin') {                                  // whirl to fill the gauge
+      const v = angleVec(songTime * 14);
+      return { x: v.x * 0.95, y: v.y * 0.95, mag: 0.95, mod };
+    }
+    // aim at the note's actual 2D spot (centre→edge), easing the pupil out onto it as the note nears
+    const tv = noteTargetVec(best, songTime);
+    const reach = bestDist <= 0.14 ? 1 : Math.max(0.2, 1 - (bestDist - 0.14) * 1.1);
+    return { x: tv.x * reach, y: tv.y * reach, mag: tv.mag * reach, mod };
   }
 
   /** True if a sustained note (hold/slide/spin) is being satisfied this frame — drives the hum. */

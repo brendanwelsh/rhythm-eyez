@@ -19,7 +19,7 @@
 // API (unchanged, what main.js calls): new Renderer(canvas) · drawGame(state) · addEffect(e) ·
 // addFlick(f) · showBanner(text) · public fields .effects .flickFx .pulse .glitch .trail
 
-import { angleVec, wrapPi, noteTargetAngle, MODS } from './chart.js';
+import { angleVec, wrapPi, noteTargetAngle, noteTargetVec, MODS } from './chart.js';
 import { TAP_ARC, HOLD_ARC, SLIDE_ARC, PRESENCE_MAG } from './scoring.js';
 
 // HUD/score/combo/banner/judgement font — 'Bungee' (loaded via Google Fonts + preloaded by main.js).
@@ -209,16 +209,17 @@ export class Renderer {
   // --- geometry helpers (names preserved) ---------------------------------
   // A point on the eye's rim for a given heading; `frac` scales the radius.
   _rimPt(eye, a, frac = 1) { const v = angleVec(a); return { x: eye.x + v.x * eye.r * frac, y: eye.y + v.y * eye.r * frac }; }
-  // The incoming note head; p 0→1 as it approaches. Comes from FAR out so you read it early, and
-  // LANDS at the hit-point (HIT_FRAC·r) — exactly where the pupil can reach.
-  _runwayPt(eye, a, p) {
+  // The incoming note head; p 0→1 as it approaches. Comes from FAR out (along the radial) so you read
+  // it early, and LANDS at the target spot (HIT_FRAC·mag·r) — exactly where the pupil reaches. `mag`
+  // is the note's distance-from-centre (0..1), so notes land ANYWHERE between centre and edge.
+  _runwayPt(eye, a, p, mag = 1) {
     const v = angleVec(a);
     const far = Math.min(this.w, this.h) * 0.5;
-    const d = eye.r * HIT_FRAC + far * (1 - p);
+    const d = eye.r * HIT_FRAC * mag + far * (1 - p);
     return { x: eye.x + v.x * d, y: eye.y + v.y * d };
   }
-  // The landing point for a note at heading `a` — where the pupil meets it.
-  _hitPt(eye, a, frac = HIT_FRAC) { const v = angleVec(a); return { x: eye.x + v.x * eye.r * frac, y: eye.y + v.y * eye.r * frac }; }
+  // The landing point for a note at heading `a`, `mag` out from centre — where the pupil meets it.
+  _hitPt(eye, a, frac = HIT_FRAC, mag = 1) { const v = angleVec(a); return { x: eye.x + v.x * eye.r * frac * mag, y: eye.y + v.y * eye.r * frac * mag }; }
 
   // Colour for a note: its side's family (blue L / pink R), varied by type.
   _noteCol(ring, type) { return (COLVAR[ring] && COLVAR[ring][type]) || ringColor(ring); }
@@ -240,8 +241,8 @@ export class Renderer {
 
   // The target SLOT: the glowing ring you must aim the PUPIL into for this note. Brightens as the note
   // nears, and flares white when the pupil is in it (n.lit) — "where your eye must be on the press".
-  _hitRing(eye, a, col, lit, p, rr) {
-    const { ctx } = this; const hp = this._hitPt(eye, a);
+  _hitRing(eye, a, col, lit, p, rr, mag = 1) {
+    const { ctx } = this; const hp = this._hitPt(eye, a, HIT_FRAC, mag);
     const near = Math.min(1, p * 1.7);
     ctx.save(); ctx.lineCap = 'round';
     // bold slot ring
@@ -310,9 +311,9 @@ export class Renderer {
   _noteTap(eye, n, songTime, p, dt) {
     const c = this._noteCol(n.ring, n.type);
     const near = Math.abs(dt) < 0.1;
-    this._hitRing(eye, n.angle, c, n.lit, p, eye.r * 0.2);   // the slot the pupil docks into
-    const head = this._runwayPt(eye, n.angle, p);
-    const tail = this._runwayPt(eye, n.angle, Math.max(0, p - 0.28));
+    this._hitRing(eye, n.angle, c, n.lit, p, eye.r * 0.2, n.mag);   // the slot the pupil docks into
+    const head = this._runwayPt(eye, n.angle, p, n.mag);
+    const tail = this._runwayPt(eye, n.angle, Math.max(0, p - 0.28), n.mag);
     // tapered comet trail (several fading orbs from tail → head)
     for (let i = 1; i <= 4; i++) {
       const tp = { x: tail.x + (head.x - tail.x) * (i / 4), y: tail.y + (head.y - tail.y) * (i / 4) };
@@ -326,8 +327,8 @@ export class Renderer {
   _noteHold(eye, n, songTime, p) {
     const { ctx } = this;
     const c = this._noteCol(n.ring, n.type);
-    const hp = this._hitPt(eye, n.angle);
-    const head = songTime < n.time ? this._runwayPt(eye, n.angle, p) : hp;
+    const hp = this._hitPt(eye, n.angle, HIT_FRAC, n.mag);
+    const head = songTime < n.time ? this._runwayPt(eye, n.angle, p, n.mag) : hp;
     const rr = eye.r * 0.24, throb = 1 + 0.06 * Math.sin(this._t * 6);
     // the gauge ring around the hit-point
     ctx.save(); ctx.lineCap = 'round';
@@ -341,35 +342,39 @@ export class Renderer {
     }
     ctx.restore();
     // a faint trail while it flies in
-    if (songTime < n.time) { const t2 = this._runwayPt(eye, n.angle, Math.max(0, p - 0.2)); this._orb(t2.x, t2.y, eye.r * 0.09, c, false, 0.4 * Math.min(1, p * 2)); }
+    if (songTime < n.time) { const t2 = this._runwayPt(eye, n.angle, Math.max(0, p - 0.2), n.mag); this._orb(t2.x, t2.y, eye.r * 0.09, c, false, 0.4 * Math.min(1, p * 2)); }
     this._orb(head.x, head.y, eye.r * 0.21 * throb, c, n.lit, Math.min(1, p * 2));
   }
 
-  // DRAG (slide) — a glowing energy RIBBON along the hit-radius from angle→angleTo, with a comet ORB
-  // head you follow around it. A faint full path shows the route; the traced part lights up. No arrows.
+  // DRAG (slide) — a glowing energy RIBBON tracing the note's actual 2D PATH across the eye (angle AND
+  // distance both interpolate, so the line can sweep, spiral in/out, or wiggle), with a comet ORB head
+  // you follow along it. A faint full path shows the route; the traced part lights up. No arrows.
   _noteSlide(eye, n, songTime, p) {
     const { ctx } = this;
     const c = this._noteCol(n.ring, n.type);
-    const a0 = n.angle, a1 = n.angleTo, sweep = wrapPi(a1 - a0);
-    const R = eye.r * HIT_FRAC;
-    ctx.save(); ctx.lineCap = 'round';
-    // faint full ribbon to trace
-    ctx.shadowColor = c; ctx.shadowBlur = 8;
-    ctx.beginPath(); ctx.arc(eye.x, eye.y, R, a0, a0 + sweep, sweep < 0);
-    ctx.strokeStyle = this._alpha(c, 0.22 * Math.min(1, p * 2)); ctx.lineWidth = eye.r * 0.06; ctx.stroke();
-    // bright traced portion up to the current head
-    const u = n.hold > 0 ? Math.max(0, Math.min(1, (songTime - n.time) / n.hold)) : 0;
-    if (u > 0) {
-      ctx.shadowColor = n.lit ? '#ffffff' : c; ctx.shadowBlur = n.lit ? 20 : 13;
-      ctx.beginPath(); ctx.arc(eye.x, eye.y, R, a0, a0 + sweep * u, sweep < 0);
-      ctx.strokeStyle = this._alpha(n.lit ? '#ffffff' : c, 0.92); ctx.lineWidth = eye.r * 0.08; ctx.stroke();
+    const span = n.hold > 0 ? n.hold : 0.3;
+    const N = 28;
+    const pts = [];                                    // sample the 2D path into screen points
+    for (let i = 0; i <= N; i++) {
+      const tv = noteTargetVec(n, n.time + (i / N) * span);
+      pts.push({ x: eye.x + tv.x * eye.r * HIT_FRAC, y: eye.y + tv.y * eye.r * HIT_FRAC });
     }
+    const trace = (a, b, alpha, width, lit) => {
+      ctx.beginPath();
+      for (let i = a; i <= b; i++) { const pt = pts[i]; i === a ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y); }
+      ctx.shadowColor = lit ? '#ffffff' : c; ctx.shadowBlur = lit ? 20 : (width > eye.r * 0.07 ? 13 : 8);
+      ctx.strokeStyle = this._alpha(lit ? '#ffffff' : c, alpha); ctx.lineWidth = width; ctx.stroke();
+    };
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    trace(0, N, 0.22 * Math.min(1, p * 2), eye.r * 0.06, false);       // faint full route
+    const u = n.hold > 0 ? Math.max(0, Math.min(1, (songTime - n.time) / n.hold)) : 0;
+    if (u > 0) trace(0, Math.max(1, Math.round(u * N)), 0.92, eye.r * 0.08, n.lit);  // lit traced part
     ctx.restore();
     // the comet head you follow
-    const head = noteTargetAngle(n, songTime);
-    const onRim = songTime >= n.time;
-    const hp = onRim ? this._hitPt(eye, head) : this._runwayPt(eye, a0, p);
-    if (!onRim) { const t2 = this._runwayPt(eye, a0, Math.max(0, p - 0.22)); this._orb(t2.x, t2.y, eye.r * 0.08, c, false, 0.4 * Math.min(1, p * 2)); }
+    const onPath = songTime >= n.time;
+    const tvh = noteTargetVec(n, songTime);
+    const hp = onPath ? { x: eye.x + tvh.x * eye.r * HIT_FRAC, y: eye.y + tvh.y * eye.r * HIT_FRAC } : this._runwayPt(eye, n.angle, p, n.mag);
+    if (!onPath) { const t2 = this._runwayPt(eye, n.angle, Math.max(0, p - 0.22), n.mag); this._orb(t2.x, t2.y, eye.r * 0.08, c, false, 0.4 * Math.min(1, p * 2)); }
     this._orb(hp.x, hp.y, eye.r * 0.15, c, n.lit, Math.min(1, p * 2));
   }
 
@@ -429,8 +434,10 @@ export class Renderer {
   // laser (not just a static glyph) so you see the shoulder/trigger button coming. Side-coloured.
   _modIncoming(eye, n, songTime, p) {
     const { ctx } = this;
-    // ride the incoming head, then sit just outside the hit-point so it tags the note without hiding it
-    const rp = songTime >= n.time ? this._hitPt(eye, n.angle, HIT_FRAC + 0.34) : this._runwayPt(eye, n.angle, p);
+    // ride the incoming head, then sit just outside the note spot so it tags it without hiding it
+    const v = angleVec(n.angle);
+    const base = this._hitPt(eye, n.angle, HIT_FRAC, n.mag);
+    const rp = songTime >= n.time ? { x: base.x + v.x * eye.r * 0.34, y: base.y + v.y * eye.r * 0.34 } : this._runwayPt(eye, n.angle, p, n.mag);
     const c = this._noteCol(n.ring, n.type);
     const bw = eye.r * 0.5, bh = eye.r * 0.3;
     ctx.save();
